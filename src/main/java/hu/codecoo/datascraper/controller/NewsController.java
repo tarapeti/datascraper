@@ -5,6 +5,8 @@ import hu.codecoo.datascraper.service.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -13,9 +15,10 @@ public class NewsController {
     @Autowired
     private NewsService newsService;
 
-    @GetMapping(path = "/getAllNews")
+    @GetMapping(path = "/test")
     @ResponseBody
-    List<News> getAllNews() {
+    List<News> getAllNews() throws IOException {
+        newsService.getHtml();
         return null;
     }
 
