@@ -1,9 +1,13 @@
 package hu.codecoo.datascraper.repository;
 
 import hu.codecoo.datascraper.entity.News;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.CrudRepository;
 
-public interface NewsRepository extends JpaRepository<News, Integer> {
+import java.util.List;
+
+public interface NewsRepository extends CrudRepository<News, Integer> {
 
     News findById(int id);
+    List<News> findAll();
+
 }

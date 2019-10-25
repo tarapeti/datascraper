@@ -10,8 +10,12 @@ import java.util.List;
 
 @RestController
 public class UsersController {
-    @Autowired
+
     private UsersService usersService;
+
+    public UsersController(UsersService usersService) {
+        this.usersService = usersService;
+    }
 
     @GetMapping(path = "/getAllUsers")
     @ResponseBody
@@ -24,6 +28,12 @@ public class UsersController {
     void newUsers(@RequestBody Users users) {
 
     }
+    @PostMapping(path = "/login", consumes = "application/json", produces = "application/json")
+    @ResponseBody
+    void login(@RequestBody String email, String password){
+        usersService.findByEmailAndPassword(email, password);
+    }
+
     @DeleteMapping(path = "/deleteUsers")
     public @ResponseBody
     void deleteUsers(@RequestParam int id) {
