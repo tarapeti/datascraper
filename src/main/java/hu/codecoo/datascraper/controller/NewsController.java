@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
 
 @RestController
@@ -17,7 +18,7 @@ public class NewsController {
 
     @GetMapping(path = "/test")
     @ResponseBody
-    List<News> getAllNews() throws IOException {
+    List<News> getAllNews() throws IOException, ParseException {
         newsService.getHtml();
         return null;
     }

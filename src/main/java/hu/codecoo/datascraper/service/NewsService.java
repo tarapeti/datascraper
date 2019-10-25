@@ -1,13 +1,9 @@
 package hu.codecoo.datascraper.service;
 
-import hu.codecoo.datascraper.entity.News;
-
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.text.ParseException;
 
 public interface NewsService {
 
-    void getHtml() throws IOException;
+    void getHtml() throws IOException, ParseException;
 }
