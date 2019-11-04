@@ -12,9 +12,8 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+
 import java.util.List;
 
 
@@ -60,7 +59,13 @@ public class SimpleNewsService implements NewsService {
                 if (content.equals("")) {
                     Elements summary = contentDoc.select("div.vxp-media__summary > p");
                     String summaryText = summary.text();
-                    contents.add(summaryText);
+                    if (summaryText.equals("")){
+                        Elements sport = contentDoc.select("div.story-body > p");
+                        String sportText = sport.text();
+                        contents.add(sportText);
+                    }else {
+                        contents.add(summaryText);
+                    }
                 } else {
                     contents.add(content);
                 }
