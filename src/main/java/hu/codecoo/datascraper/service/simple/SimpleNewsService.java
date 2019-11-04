@@ -44,13 +44,6 @@ public class SimpleNewsService implements NewsService {
 
             Elements creationDate = subDoc.select("item > pubDate");
             List<String> datesUnderMainTopic = fetchElemets(creationDate);
-            List<Long> dateInMilis = new ArrayList<>();
-            for (String dateString : datesUnderMainTopic){
-                SimpleDateFormat format = new SimpleDateFormat("dd MMM yyyy HH:mm:ss");
-                Date date = format.parse(dateString.substring(5, 25));
-                long time = date.getTime();
-                dateInMilis.add(time);
-            }
 
             Elements titles = subDoc.select("item > title");
             List<String> titlesUnderMainTopic = fetchElemets(titles);
@@ -59,24 +52,23 @@ public class SimpleNewsService implements NewsService {
             List<String> linksUnderMainTopic = fetchElemets(links);
 
             List<String> contents = new ArrayList<>();
-            for ( String link : linksUnderMainTopic) {
+            for (String link : linksUnderMainTopic) {
                 Document contentDoc = Jsoup.connect(link).get();
                 Elements paragraphs = contentDoc.select("div.story-body__inner > p");
                 String content = paragraphs.text();
                 //if it only contains a video then the summary is needed
-                if (content.equals("")){
+                if (content.equals("")) {
                     Elements summary = contentDoc.select("div.vxp-media__summary > p");
                     String summaryText = summary.text();
                     contents.add(summaryText);
-                }else {
+                } else {
                     contents.add(content);
                 }
             }
 
-
             List<News> all = new ArrayList<>();
             for (int i = 0; i < datesUnderMainTopic.size(); i++) {
-                all.add(new News(topicNames.get(i), contents.get(i), dateInMilis.get(i)));
+                all.add(new News(titlesUnderMainTopic.get(i), contents.get(i), datesUnderMainTopic.get(i)));
             }
             newsRepository.saveAll(all);
 

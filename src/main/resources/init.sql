@@ -1,3 +1,6 @@
+DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS news CASCADE;
+
 CREATE TABLE users(
     id serial primary key,
     email text unique not null,
@@ -8,5 +11,5 @@ CREATE TABLE news(
     id serial primary key,
     header text,
     content text,
-    created_at bigint
+    created_at text
 );
