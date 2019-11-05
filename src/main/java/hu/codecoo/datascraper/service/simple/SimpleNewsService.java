@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 
@@ -22,23 +21,22 @@ public class SimpleNewsService implements NewsService {
     @Autowired
     private NewsRepository newsRepository;
 
+    private final String BASE_URL = "https://www.bbc.com/news/10628494";
+
     @Override
     public void getHtml() throws IOException, ParseException {
-        Document doc = Jsoup.connect("https://www.bbc.com/news/10628494").get();
+        Document doc = Jsoup.connect(BASE_URL).get();
 
         Elements topics = doc.select("div.story-body > div:nth-child(6) > .links-list > li > a");
 
-        List<String> topicNames = new ArrayList<>();
-        List<String> ulrs = new ArrayList<>();
-        for (Element e : topics) {
-            topicNames.add(e.text());
-            for (Attribute a : e.attributes()) {
-                String url = a.getValue();
-                ulrs.add(url);
-            }
-        }
+        //removing "Top Stories" because articles under it appear under other articles so it would result in inserting duplicated rows into db
+        topics.remove(topics.first());
 
-        for (String url : ulrs) {
+        List<String> topicNames = getTopicNames(topics, doc);
+
+        List<String> urls = getUrls(topics);
+
+        for (String url : urls) {
             Document subDoc = Jsoup.connect(url).get();
 
             Elements creationDate = subDoc.select("item > pubDate");
@@ -50,34 +48,56 @@ public class SimpleNewsService implements NewsService {
             Elements links = subDoc.select("item > link");
             List<String> linksUnderMainTopic = fetchElemets(links);
 
-            List<String> contents = new ArrayList<>();
-            for (String link : linksUnderMainTopic) {
-                Document contentDoc = Jsoup.connect(link).get();
-                Elements paragraphs = contentDoc.select("div.story-body__inner > p");
-                String content = paragraphs.text();
-                //if it only contains a video then the summary is needed
-                if (content.equals("")) {
-                    Elements summary = contentDoc.select("div.vxp-media__summary > p");
-                    String summaryText = summary.text();
-                    if (summaryText.equals("")){
-                        Elements sport = contentDoc.select("div.story-body > p");
-                        String sportText = sport.text();
-                        contents.add(sportText);
-                    }else {
-                        contents.add(summaryText);
-                    }
-                } else {
-                    contents.add(content);
-                }
-            }
+            List<String> contents = fetchContents(linksUnderMainTopic);
 
-            List<News> all = new ArrayList<>();
-            for (int i = 0; i < datesUnderMainTopic.size(); i++) {
-                all.add(new News(titlesUnderMainTopic.get(i), contents.get(i), datesUnderMainTopic.get(i)));
-            }
+            List<News> all = fetchNews(titlesUnderMainTopic, contents, datesUnderMainTopic);
+
             newsRepository.saveAll(all);
 
         }
+    }
+
+    private List<String> fetchContents(List<String> linksUnderMainTopic) throws IOException {
+        List<String> contents = new ArrayList<>();
+        for (String link : linksUnderMainTopic) {
+            Document contentDoc = Jsoup.connect(link).get();
+            Elements paragraphs = contentDoc.select("div.story-body__inner > p");
+            String content = paragraphs.text();
+            //if it only contains a video then the summary is needed
+            if (content.equals("")) {
+                Elements summary = contentDoc.select("div.vxp-media__summary > p");
+                String summaryText = summary.text();
+                if (summaryText.equals("")) {
+                    Elements sport = contentDoc.select("div.story-body > p");
+                    String sportText = sport.text();
+                    contents.add(sportText);
+                } else {
+                    contents.add(summaryText);
+                }
+            } else {
+                contents.add(content);
+            }
+        }
+        return contents;
+    }
+
+    private List<String> getTopicNames(Elements element, Document doc){
+        List<String> topicNames = new ArrayList<>();
+        for (Element e : element) {
+            topicNames.add(e.text());
+        }
+        return topicNames;
+    }
+
+    private List<String> getUrls(Elements element){
+        List<String> ulrs = new ArrayList<>();
+        for (Element e : element) {
+            for (Attribute a : e.attributes()) {
+                String url = a.getValue();
+                ulrs.add(url);
+            }
+        }
+        return ulrs;
     }
 
     private List<String> fetchElemets(Elements elements) {
@@ -87,5 +107,13 @@ public class SimpleNewsService implements NewsService {
             elementsAsString.add(elementString);
         }
         return elementsAsString;
+    }
+
+    private List<News> fetchNews(List<String> headers, List<String> content, List<String> created_at){
+        List<News> all = new ArrayList<>();
+        for (int i = 0; i < headers.size(); i++) {
+            all.add(new News(headers.get(i), content.get(i), created_at.get(i)));
+        }
+        return all;
     }
 }
