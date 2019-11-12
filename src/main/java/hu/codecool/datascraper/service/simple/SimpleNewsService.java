@@ -1,8 +1,8 @@
-package hu.codecoo.datascraper.service.simple;
+package hu.codecool.datascraper.service.simple;
 
-import hu.codecoo.datascraper.entity.News;
-import hu.codecoo.datascraper.repository.NewsRepository;
-import hu.codecoo.datascraper.service.NewsService;
+import hu.codecool.datascraper.entity.News;
+import hu.codecool.datascraper.jparepositroy.NewsJpaRepository;
+import hu.codecool.datascraper.service.NewsService;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.*;
 import org.jsoup.select.Elements;
@@ -18,8 +18,9 @@ import java.util.List;
 
 @Service
 public class SimpleNewsService implements NewsService {
+
     @Autowired
-    private NewsRepository newsRepository;
+    private NewsJpaRepository newsRepository;
 
     private final String BASE_URL = "https://www.bbc.com/news/10628494";
 
@@ -57,6 +58,11 @@ public class SimpleNewsService implements NewsService {
         }
     }
 
+    @Override
+    public List<News> getAll() {
+        return newsRepository.findAll();
+    }
+
     private List<String> fetchContents(List<String> linksUnderMainTopic) throws IOException {
         List<String> contents = new ArrayList<>();
         for (String link : linksUnderMainTopic) {
@@ -81,7 +87,7 @@ public class SimpleNewsService implements NewsService {
         return contents;
     }
 
-    private List<String> getTopicNames(Elements element, Document doc){
+    private List<String> getTopicNames(Elements element, Document doc) {
         List<String> topicNames = new ArrayList<>();
         for (Element e : element) {
             topicNames.add(e.text());
@@ -89,7 +95,7 @@ public class SimpleNewsService implements NewsService {
         return topicNames;
     }
 
-    private List<String> getUrls(Elements element){
+    private List<String> getUrls(Elements element) {
         List<String> ulrs = new ArrayList<>();
         for (Element e : element) {
             for (Attribute a : e.attributes()) {
@@ -109,7 +115,7 @@ public class SimpleNewsService implements NewsService {
         return elementsAsString;
     }
 
-    private List<News> fetchNews(List<String> headers, List<String> content, List<String> created_at){
+    private List<News> fetchNews(List<String> headers, List<String> content, List<String> created_at) {
         List<News> all = new ArrayList<>();
         for (int i = 0; i < headers.size(); i++) {
             all.add(new News(headers.get(i), content.get(i), created_at.get(i)));
