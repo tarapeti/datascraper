@@ -1,4 +1,4 @@
-package hu.codecoo.datascraper.entity;
+package hu.codecool.datascraper.entity;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

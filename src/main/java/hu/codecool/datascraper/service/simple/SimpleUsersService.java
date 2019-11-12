@@ -1,8 +1,8 @@
-package hu.codecoo.datascraper.service.simple;
+package hu.codecool.datascraper.service.simple;
 
-import hu.codecoo.datascraper.entity.Users;
-import hu.codecoo.datascraper.repository.UsersRepository;
-import hu.codecoo.datascraper.service.UsersService;
+import hu.codecool.datascraper.entity.Users;
+import hu.codecool.datascraper.jparepositroy.UsersRepository;
+import hu.codecool.datascraper.service.UsersService;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -1,6 +1,6 @@
-package hu.codecoo.datascraper.service;
+package hu.codecool.datascraper.service;
 
-import hu.codecoo.datascraper.entity.Users;
+import hu.codecool.datascraper.entity.Users;
 
 public interface UsersService {
 

@@ -1,9 +1,7 @@
-package hu.codecoo.datascraper.controller;
+package hu.codecool.datascraper.controller;
 
-import hu.codecoo.datascraper.entity.Users;
-import hu.codecoo.datascraper.entity.Users;
-import hu.codecoo.datascraper.service.UsersService;
-import org.springframework.beans.factory.annotation.Autowired;
+import hu.codecool.datascraper.entity.Users;
+import hu.codecool.datascraper.service.UsersService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

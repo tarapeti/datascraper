@@ -1,4 +1,4 @@
-package hu.codecoo.datascraper;
+package hu.codecool.datascraper;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
