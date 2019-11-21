@@ -5,7 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UsersRepository extends CrudRepository<Users, Integer> {
+public interface UsersJpaRepository extends CrudRepository<Users, Integer> {
 
     Users findByEmailAndPassword(String email, String password);
     Users save(Users users);

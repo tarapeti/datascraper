@@ -1,6 +1,7 @@
 package hu.codecool.datascraper.controller;
 
-import hu.codecool.datascraper.repository.NewsRepository;
+import hu.codecool.datascraper.elasticrepository.NewsElasticRepository;
+import hu.codecool.datascraper.entity.News;
 import hu.codecool.datascraper.service.NewsService;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.List;
 
 @RestController
 public class NewsController {
@@ -19,7 +21,7 @@ public class NewsController {
     private RestHighLevelClient client;
 
     @Autowired
-    private NewsRepository newsRepository;
+    private NewsElasticRepository newsElasticRepository;
 
     @GetMapping(path = "/test")
     @ResponseBody
@@ -29,8 +31,8 @@ public class NewsController {
 
     @PostMapping(path = "/getAll")
     @ResponseBody
-    String newNews(@RequestBody String vmi) throws IOException {
-        return vmi;
+    List<News> newNews(@RequestBody String vmi) throws IOException {
+        return newsElasticRepository.findAll();
     }
 
     @DeleteMapping(path = "/deleteNews")

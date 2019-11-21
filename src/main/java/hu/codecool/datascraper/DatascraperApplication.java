@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 //@EnableAutoConfiguration(exclude={ElasticsearchAutoConfiguration.class, RestClientAutoConfiguration.class})
-@EnableElasticsearchRepositories(basePackages = "hu.codecool.datascraper.repository")
+@EnableElasticsearchRepositories(basePackages = "hu.codecool.datascraper.elasticrepository")
 @EnableJpaRepositories(basePackages = {"hu.codecool.datascraper.jparepositroy"})
 public class DatascraperApplication {
 
